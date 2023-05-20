@@ -7,6 +7,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import page.LoginPage;
+
 import static com.codeborne.selenide.Selenide.open;
 import static data.SQLHelper.cleanDatabase;
 
@@ -20,13 +21,13 @@ public class SQLTests {
     @Test
     @DisplayName("should successful login")
     void shouldSuccessfulLogin() {
-            open("http://localhost:9999");
-            Configuration.holdBrowserOpen = true;
-            var loginPage = new LoginPage();
-            var authInfo = DataHelper.getAuthInfoForUser();
-            var verificationPage = loginPage.validLogin(authInfo);
-            var verificationCode = SQLHelper.getVerificationCode();
-            verificationPage.validVerify(verificationCode.getCode());
+        open("http://localhost:9999");
+        Configuration.holdBrowserOpen = true;
+        var loginPage = new LoginPage();
+        var authInfo = DataHelper.getAuthInfoForUser();
+        var verificationPage = loginPage.validLogin(authInfo);
+        var verificationCode = SQLHelper.getVerificationCode();
+        verificationPage.validVerify(verificationCode.getCode());
     }
 
     @Test
@@ -38,7 +39,20 @@ public class SQLTests {
         var authInfo = DataHelper.generateRandomUser();
         loginPage.validLogin(authInfo);
         loginPage.errorNotification();
-
     }
+
+    @Test
+    @DisplayName("should successful for random code")
+    void shouldSuccessfulForRandomCode() {
+        open("http://localhost:9999");
+        Configuration.holdBrowserOpen = true;
+        var loginPage = new LoginPage();
+        var authInfo = DataHelper.getAuthInfoForUser();
+        var verificationPage = loginPage.validLogin(authInfo);
+        var verificationCode = DataHelper.generateRandomVerificationCode().getCode();
+        verificationPage.verify(verificationCode);
+        verificationPage.errorNotification();
+    }
+
 
 }
